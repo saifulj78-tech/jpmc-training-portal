@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPMC Training Application Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        jpmc: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .step-active {
+            border-color: #0d9488;
+            color: #0d9488;
+        }
+        .step-completed {
+            background-color: #0d9488;
+            color: #ffffff;
+            border-color: #0d9488;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Brand / Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-jpmc-600 to-navy-800 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                        <i data-lucide="cross"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold text-slate-900 tracking-tight block leading-none">JPMC</span>
+                        <span class="text-xs text-slate-500 font-medium">Training & Development Portal</span>
+                    </div>
+                </div>
+
+                <!-- View Switcher Tabs -->
+                <div class="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl">
+                    <button id="navFormBtn" onclick="switchTab('form')" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 bg-white text-jpmc-700 shadow-sm">
+                        <i data-lucide="file-plus" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Apply for Training</span>
+                        <span class="sm:hidden">Apply</span>
+                    </button>
+                    <button id="navAdminBtn" onclick="switchTab('admin')" class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">L&D Admin Portal</span>
+                        <span class="sm:hidden">Portal</span>
+                        <span id="pendingBadge" class="bg-amber-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                    </button>
+                </div>
+
+                <!-- Guide Modal Trigger -->
+                <button onclick="toggleGuideModal(true)" class="hidden md:flex items-center space-x-1.5 text-xs text-jpmc-700 hover:text-jpmc-800 font-medium bg-jpmc-50 hover:bg-jpmc-100 border border-jpmc-200 px-3 py-1.5 rounded-lg transition-colors">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span>Free Hosting Guide</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+
+        <!-- Banner for Mobile No-Code Guide -->
+        <div class="md:hidden mb-4 no-print">
+            <button onclick="toggleGuideModal(true)" class="w-full flex items-center justify-between p-3 bg-jpmc-50 border border-jpmc-200 rounded-xl text-xs font-semibold text-jpmc-800">
+                <span class="flex items-center space-x-2">
+                    <i data-lucide="info" class="w-4 h-4 text-jpmc-600"></i>
+                    <span>How to host & build this for free?</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- VIEW 1: EMPLOYEE TRAINING APPLICATION FORM -->
+        <!-- ========================================================================= -->
+        <section id="formView" class="max-w-3xl mx-auto">
+            <!-- Form Card Header -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                <div class="bg-gradient-to-r from-jpmc-700 to-navy-800 p-6 text-white">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h1 class="text-xl sm:text-2xl font-bold">Training Request Form</h1>
+                            <p class="text-slate-200 text-xs sm:text-sm mt-1">Submit your request for professional development, medical certifications, or workshops.</p>
+                        </div>
+                        <div class="hidden sm:block text-right">
+                            <span class="inline-block px-2.5 py-1 bg-white/10 backdrop-blur-md rounded-md text-xs font-mono text-jpmc-100 border border-white/20">Form Ref: JPMC-TRN-2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Step Stepper Header -->
+                <div class="px-4 py-4 bg-slate-50 border-b border-slate-200 no-print">
+                    <div class="flex items-center justify-between max-w-xl mx-auto">
+                        <!-- Step 1 Indicator -->
+                        <div class="flex flex-col items-center flex-1 cursor-pointer" onclick="goToStep(1)">
+                            <div id="stepCircle1" class="w-9 h-9 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-all step-active bg-white">1</div>
+                            <span class="text-[11px] font-medium text-slate-600 mt-1.5 text-center">Employee</span>
+                        </div>
+                        <div id="stepLine1" class="h-0.5 flex-1 bg-slate-200 -mt-5"></div>
+
+                        <!-- Step 2 Indicator -->
+                        <div class="flex flex-col items-center flex-1 cursor-pointer" onclick="goToStep(2)">
+                            <div id="stepCircle2" class="w-9 h-9 rounded-full border-2 border-slate-300 bg-white text-slate-400 flex items-center justify-center font-bold text-sm transition-all">2</div>
+                            <span class="text-[11px] font-medium text-slate-500 mt-1.5 text-center">Course Details</span>
+                        </div>
+                        <div id="stepLine2" class="h-0.5 flex-1 bg-slate-200 -mt-5"></div>
+
+                        <!-- Step 3 Indicator -->
+                        <div class="flex flex-col items-center flex-1 cursor-pointer" onclick="goToStep(3)">
+                            <div id="stepCircle3" class="w-9 h-9 rounded-full border-2 border-slate-300 bg-white text-slate-400 flex items-center justify-center font-bold text-sm transition-all">3</div>
+                            <span class="text-[11px] font-medium text-slate-500 mt-1.5 text-center">Justification</span>
+                        </div>
+                        <div id="stepLine3" class="h-0.5 flex-1 bg-slate-200 -mt-5"></div>
+
+                        <!-- Step 4 Indicator -->
+                        <div class="flex flex-col items-center flex-1 cursor-pointer" onclick="goToStep(4)">
+                            <div id="stepCircle4" class="w-9 h-9 rounded-full border-2 border-slate-300 bg-white text-slate-400 flex items-center justify-center font-bold text-sm transition-all">4</div>
+                            <span class="text-[11px] font-medium text-slate-500 mt-1.5 text-center">Review</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Body -->
+                <form id="trainingAppForm" onsubmit="handleFormSubmit(event)" class="p-6 sm:p-8 space-y-6">
+                    
+                    <!-- STEP 1: EMPLOYEE DETAILS -->
+                    <div id="formStep1" class="space-y-4">
+                        <div class="border-b border-slate-100 pb-3 mb-4">
+                            <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                                <i data-lucide="user" class="w-5 h-5 text-jpmc-600"></i> Section 1: Employee & Department Information
+                            </h2>
+                            <p class="text-xs text-slate-500">Provide your employee details for administrative tracking.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Full Name *</label>
+                                <input type="text" id="empName" required placeholder="e.g. Dr. Sarah Ahmad" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Staff ID *</label>
+                                <input type="text" id="staffId" required placeholder="e.g. JPMC-1042" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Department / Unit *</label>
+                                <select id="department" required class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all bg-white">
+                                    <option value="">Select Department</option>
+                                    <option value="Nursing Services">Nursing Services</option>
+                                    <option value="Diagnostic Imaging / Radiology">Diagnostic Imaging / Radiology</option>
+                                    <option value="Pharmacy">Pharmacy</option>
+                                    <option value="Laboratory & Pathology">Laboratory & Pathology</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Human Resources / L&D">Human Resources / L&D</option>
+                                    <option value="Quality & Patient Safety">Quality & Patient Safety</option>
+                                    <option value="Outpatient Clinics">Outpatient Clinics</option>
+                                    <option value="Administration & Finance">Administration & Finance</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Job Title / Designation *</label>
+                                <input type="text" id="jobTitle" required placeholder="e.g. Senior Staff Nurse" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Email Address *</label>
+                                <input type="email" id="empEmail" required placeholder="sarah.ahmad@jpmc.com.bn" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Contact Phone Number *</label>
+                                <input type="tel" id="empPhone" required placeholder="+673 876 5432" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Direct Manager / Supervisor Name *</label>
+                                <input type="text" id="managerName" required placeholder="e.g. Hjh Maria Abdullah (Head of Nursing)" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: COURSE DETAILS -->
+                    <div id="formStep2" class="space-y-4 hidden">
+                        <div class="border-b border-slate-100 pb-3 mb-4">
+                            <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                                <i data-lucide="book-open" class="w-5 h-5 text-jpmc-600"></i> Section 2: Training Course & Event Details
+                            </h2>
+                            <p class="text-xs text-slate-500">Provide complete specifications of the proposed training program.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Course / Event Title *</label>
+                                <input type="text" id="courseTitle" placeholder="e.g. Advanced Cardiac Life Support (ACLS) Re-certification" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Training Provider / Organiser *</label>
+                                    <input type="text" id="courseProvider" placeholder="e.g. Singapore General Hospital / AHA" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Training Type / Format *</label>
+                                    <select id="courseType" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all bg-white">
+                                        <option value="Internal Training">Internal JPMC Training</option>
+                                        <option value="External Local">External Local (Brunei)</option>
+                                        <option value="External Overseas">External Overseas</option>
+                                        <option value="Online / E-Learning">Online / E-Learning Webinar</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Start Date *</label>
+                                    <input type="date" id="startDate" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">End Date *</label>
+                                    <input type="date" id="endDate" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Location / Venue *</label>
+                                    <input type="text" id="courseLocation" placeholder="e.g. JPMC College of Health Sciences / Zoom" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Estimated Cost / Fee (BND $) *</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold text-xs">BND $</div>
+                                        <input type="number" min="0" step="0.01" id="courseCost" placeholder="0.00" class="w-full pl-14 pr-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all">
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-1">Enter 0 if this course is free of charge.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: JUSTIFICATION -->
+                    <div id="formStep3" class="space-y-4 hidden">
+                        <div class="border-b border-slate-100 pb-3 mb-4">
+                            <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                                <i data-lucide="target" class="w-5 h-5 text-jpmc-600"></i> Section 3: Justification & Learning Outcomes
+                            </h2>
+                            <p class="text-xs text-slate-500">Explain the strategic value and benefits of attending this program.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Reason for Request / Business Case *</label>
+                                <textarea id="justification" rows="3" placeholder="Explain why attending this course is essential for your current role, licensure, or department objectives..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Expected Key Learning Outcomes *</label>
+                                <textarea id="learningOutcomes" rows="3" placeholder="List 2-3 specific skills, knowledge areas, or certifications you expect to acquire..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all"></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Impact on Patient Care / Department Operations *</label>
+                                <textarea id="impactDescription" rows="2" placeholder="How will this improve hospital care quality, safety compliance, or workflow efficiency?" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500 text-sm transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: REVIEW & SUBMIT -->
+                    <div id="formStep4" class="space-y-4 hidden">
+                        <div class="border-b border-slate-100 pb-3 mb-4">
+                            <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-jpmc-600"></i> Section 4: Review Application
+                            </h2>
+                            <p class="text-xs text-slate-500">Please review your information carefully prior to final submission.</p>
+                        </div>
+
+                        <div id="reviewSummaryCard" class="bg-slate-50 p-5 rounded-xl border border-slate-200 text-sm space-y-4">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+
+                        <div class="p-4 bg-jpmc-50 rounded-xl border border-jpmc-200 text-xs text-jpmc-900 flex items-start gap-3">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-jpmc-700 flex-shrink-0 mt-0.5"></i>
+                            <div>
+                                <span class="font-semibold block mb-0.5">Employee Declaration</span>
+                                By submitting this form, I confirm that all information provided is accurate and that I will complete the required learning assessment post-training.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Navigation Buttons -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between no-print">
+                        <button type="button" id="prevBtn" onclick="changeStep(-1)" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-100 transition-all flex items-center gap-2 invisible">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
+                        </button>
+
+                        <div class="flex items-center space-x-3">
+                            <button type="button" id="nextBtn" onclick="changeStep(1)" class="px-6 py-2.5 rounded-xl bg-jpmc-600 hover:bg-jpmc-700 text-white text-sm font-semibold transition-all shadow-md flex items-center gap-2">
+                                Next Step <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                            
+                            <button type="submit" id="submitBtn" class="px-6 py-2.5 rounded-xl bg-jpmc-700 hover:bg-jpmc-800 text-white text-sm font-semibold transition-all shadow-md flex items-center gap-2 hidden">
+                                <i data-lucide="send" class="w-4 h-4"></i> Submit Request
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- VIEW 2: MANAGER / L&D ADMIN DASHBOARD PORTAL -->
+        <!-- ========================================================================= -->
+        <section id="adminView" class="hidden space-y-6">
+            
+            <!-- Dashboard Top Bar -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="text-2xl font-bold text-slate-900">L&D Management Portal</h1>
+                        <span class="bg-jpmc-100 text-jpmc-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Admin View</span>
+                    </div>
+                    <p class="text-slate-500 text-xs sm:text-sm mt-1">Review, approve, or manage staff training applications and budget allocation.</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 no-print">
+                    <button onclick="exportToCSV()" class="px-3.5 py-2 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all">
+                        <i data-lucide="download" class="w-4 h-4 text-slate-500"></i> Export CSV
+                    </button>
+                    <button onclick="window.print()" class="px-3.5 py-2 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium flex items-center gap-1.5 shadow-sm transition-all">
+                        <i data-lucide="printer" class="w-4 h-4 text-slate-500"></i> Print Summary
+                    </button>
+                    <button onclick="resetDemoData()" class="px-3.5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium flex items-center gap-1.5 transition-all">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset Demo Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Metrics Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Requests</p>
+                        <h3 id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
+                        <i data-lucide="file-text" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pending Review</p>
+                        <h3 id="statPending" class="text-2xl font-bold text-amber-600 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Approved Requests</p>
+                        <h3 id="statApproved" class="text-2xl font-bold text-emerald-600 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Approved Budget</p>
+                        <h3 id="statBudget" class="text-2xl font-bold text-jpmc-700 mt-1">BND $0.00</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-jpmc-50 text-jpmc-600 flex items-center justify-center">
+                        <i data-lucide="banknote" class="w-6 h-6"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 no-print">
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-80">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+                    <input type="text" id="searchInput" oninput="filterRequests()" placeholder="Search staff, course, ID..." class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500 focus:border-jpmc-500">
+                </div>
+
+                <!-- Status Filter Tabs -->
+                <div class="flex items-center space-x-1 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+                    <button onclick="setStatusFilter('ALL')" id="filterAll" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white">All</button>
+                    <button onclick="setStatusFilter('Pending Approval')" id="filterPending" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Pending</button>
+                    <button onclick="setStatusFilter('Approved')" id="filterApproved" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Approved</button>
+                    <button onclick="setStatusFilter('Info Requested')" id="filterInfo" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Info Requested</button>
+                    <button onclick="setStatusFilter('Rejected')" id="filterRejected" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Rejected</button>
+                </div>
+            </div>
+
+            <!-- Applications Table Card -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="p-4">Ref ID & Date</th>
+                                <th class="p-4">Employee Details</th>
+                                <th class="p-4">Course Title & Type</th>
+                                <th class="p-4">Cost (BND)</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-right no-print">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTableBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="emptyState" class="p-12 text-center hidden">
+                    <i data-lucide="folder-open" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                    <h4 class="text-base font-semibold text-slate-700">No applications found</h4>
+                    <p class="text-xs text-slate-500 mt-1">Try adjusting your filter or submit a new request from the application tab.</p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- APPLICATION DETAIL & REVIEW MODAL -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-150">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-bold" id="modalTitle">Application Details</h3>
+                    <p class="text-xs text-slate-400" id="modalSubTitle">Ref ID: -</p>
+                </div>
+                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-5 text-sm" id="modalBody">
+                <!-- Content inserted dynamically -->
+            </div>
+
+            <!-- Modal Review Action Box (For Admin) -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 space-y-3 no-print">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Manager / L&D Review Notes</label>
+                    <textarea id="reviewNotesInput" rows="2" placeholder="Add approval remarks or details required..." class="w-full px-3 py-2 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-jpmc-500"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end space-x-2">
+                    <button onclick="updateStatus('Info Requested')" class="px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold transition-all">
+                        Request Info
+                    </button>
+                    <button onclick="updateStatus('Rejected')" class="px-3.5 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-all">
+                        Reject Application
+                    </button>
+                    <button onclick="updateStatus('Approved')" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold transition-all shadow-md">
+                        Approve Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FREE HOSTING & NO-CODE GUIDE MODAL -->
+    <div id="guideModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="px-6 py-4 bg-gradient-to-r from-jpmc-700 to-navy-800 text-white flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="rocket" class="w-5 h-5 text-jpmc-100"></i>
+                    <h3 class="text-base font-bold">Free Deployment & No-Code Guide</h3>
+                </div>
+                <button onclick="toggleGuideModal(false)" class="text-slate-300 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6 text-sm">
+                
+                <p class="text-slate-600">
+                    Looking to deploy a system like this for real-world employee training requests in your organization without spending on licenses? Here are the top zero-cost methods:
+                </p>
+
+                <!-- Method 1 -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div class="flex items-center space-x-2 text-jpmc-800 font-bold">
+                        <i data-lucide="globe" class="w-4 h-4"></i>
+                        <span>Option 1: Deploy This Web App (Free Static Hosting)</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        You can host this exact HTML file online for free using platform hosts that offer free SSL certificates and custom domain binding:
+                    </p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1 font-mono pl-2">
+                        <li><strong>GitHub Pages:</strong> Upload to a repository → Enable Pages in settings.</li>
+                        <li><strong>Netlify or Vercel:</strong> Drag and drop this single <code class="bg-slate-200 px-1 py-0.5 rounded">index.html</code> file.</li>
+                    </ul>
+                </div>
+
+                <!-- Method 2 -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div class="flex items-center space-x-2 text-jpmc-800 font-bold">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                        <span>Option 2: Google Ecosystem (Forms + Sheets + Looker Studio)</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Create an automated workflow using standard free Google Workspace tools:
+                    </p>
+                    <ol class="list-decimal list-inside text-xs text-slate-600 space-y-1 pl-2">
+                        <li>Build the employee form in <strong>Google Forms</strong>.</li>
+                        <li>Connect responses directly to <strong>Google Sheets</strong>.</li>
+                        <li>Use <strong>Google Apps Script</strong> (free built-in automation) to automatically send approval emails to managers.</li>
+                        <li>Embed a <strong>Looker Studio</strong> dashboard for L&D metric visualization.</li>
+                    </ol>
+                </div>
+
+                <!-- Method 3 -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div class="flex items-center space-x-2 text-jpmc-800 font-bold">
+                        <i data-lucide="layout" class="w-4 h-4"></i>
+                        <span>Option 3: Microsoft 365 (Forms + Power Automate)</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        If your organization already uses M365:
+                    </p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1 pl-2">
+                        <li>Use <strong>MS Forms</strong> for front-end entry.</li>
+                        <li>Set up a free/included <strong>Power Automate</strong> flow to route requests to managers via Outlook or Teams for 1-click approvals.</li>
+                    </ul>
+                </div>
+
+                <!-- Method 4 -->
+                <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div class="flex items-center space-x-2 text-jpmc-800 font-bold">
+                        <i data-lucide="smartphone" class="w-4 h-4"></i>
+                        <span>Option 4: AppSheet (No-Code App Generator)</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Turn a Google Sheet or Excel table into a fully mobile-friendly native app for up to 10 users completely free using <strong>Google AppSheet</strong>.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="p-4 bg-slate-100 border-t border-slate-200 text-right">
+                <button onclick="toggleGuideModal(false)" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-semibold">Close Guide</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default Pre-loaded Sample Applications Data
+        const SAMPLE_DATA = [
+            {
+                id: "JPMC-2026-001",
+                submittedAt: "2026-10-10 09:15",
+                empName: "Siti Rahmah Haji Ismail",
+                staffId: "JPMC-8821",
+                department: "Nursing Services",
+                jobTitle: "Senior Staff Nurse",
+                empEmail: "siti.rahmah@jpmc.com.bn",
+                empPhone: "+673 881 2345",
+                managerName: "Hjh Maria Abdullah",
+                courseTitle: "Advanced Pediatric Life Support (APLS)",
+                courseProvider: "Brunei Resuscitation Council",
+                courseType: "External Local",
+                startDate: "2026-11-05",
+                endDate: "2026-11-07",
+                courseLocation: "PAPRSB Institute of Health Sciences, UBD",
+                courseCost: 350.00,
+                justification: "Critical for upcoming accreditation in the Pediatric Ward to ensure high standards of resuscitation response.",
+                learningOutcomes: "Master early recognition of pediatric deterioration, airway management, and emergency protocol leadership.",
+                impactDescription: "Reduces clinical risk during emergency pediatric transfers and upgrades nursing competence.",
+                status: "Pending Approval",
+                reviewNotes: ""
+            },
+            {
+                id: "JPMC-2026-002",
+                submittedAt: "2026-10-08 14:30",
+                empName: "Ahmad Zaki Rahman",
+                staffId: "JPMC-4109",
+                department: "Information Technology",
+                jobTitle: "Systems Administrator",
+                empEmail: "zaki.rahman@jpmc.com.bn",
+                empPhone: "+673 872 9900",
+                managerName: "Lim Wei Sheng",
+                courseTitle: "Healthcare Cybersecurity & HIPAA/Data Protection Compliance",
+                courseProvider: "CyberSecurity Brunei / SANS",
+                courseType: "Online / E-Learning",
+                startDate: "2026-11-15",
+                endDate: "2026-11-18",
+                courseLocation: "Online / Virtual Classroom",
+                courseCost: 650.00,
+                justification: "Necessary to strengthen electronic health records (EHR) network defenses against cybersecurity threats.",
+                learningOutcomes: "Gain certified skills in threat mitigation, hospital data privacy compliance, and incident response.",
+                impactDescription: "Ensures 100% compliance with local healthcare privacy regulations and safeguards patient records.",
+                status: "Approved",
+                reviewNotes: "Approved by HR L&D. Critical cybersecurity requirement for Q4."
+            },
+            {
+                id: "JPMC-2026-003",
+                submittedAt: "2026-10-02 11:00",
+                empName: "Dr. Kelvin Tan",
+                staffId: "JPMC-1004",
+                department: "Diagnostic Imaging / Radiology",
+                jobTitle: "Consultant Radiologist",
+                empEmail: "kelvin.tan@jpmc.com.bn",
+                empPhone: "+673 822 4111",
+                managerName: "Dr. Maryam Salleh",
+                courseTitle: "3D Cardiac MRI Imaging Masterclass",
+                courseProvider: "Asian Society of Cardiovascular Imaging",
+                courseType: "External Overseas",
+                startDate: "2026-12-01",
+                endDate: "2026-12-05",
+                courseLocation: "Singapore General Hospital, Singapore",
+                courseCost: 1800.00,
+                justification: "To introduce non-invasive advanced cardiac imaging techniques at JPMC Radiology department.",
+                learningOutcomes: "Learn complex cardiac image acquisition, post-processing protocols, and diagnostic interpretation.",
+                impactDescription: "Expands JPMC's diagnostic cardiology services and reduces need for overseas patient referrals.",
+                status: "Approved",
+                reviewNotes: "Supported by Head of Department. Budget allocated under Clinical Specialty Enhancement."
+            }
+        ];
+
+        // Global State Variables
+        let currentStep = 1;
+        let applications = [];
+        let activeFilter = 'ALL';
+        let currentSelectedId = null;
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadApplications();
+            updateMetrics();
+            renderTable();
+        });
+
+        // LocalStorage Loader
+        function loadApplications() {
+            const stored = localStorage.getItem('jpmc_training_requests');
+            if (stored) {
+                try {
+                    applications = JSON.parse(stored);
+                } catch(e) {
+                    applications = [...SAMPLE_DATA];
+                }
+            } else {
+                applications = [...SAMPLE_DATA];
+                saveToLocalStorage();
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('jpmc_training_requests', JSON.stringify(applications));
+        }
+
+        // Navigation Tab Switching
+        function switchTab(tab) {
+            const formView = document.getElementById('formView');
+            const adminView = document.getElementById('adminView');
+            const navFormBtn = document.getElementById('navFormBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
+
+            if (tab === 'form') {
+                formView.classList.remove('hidden');
+                adminView.classList.add('hidden');
+                navFormBtn.className = "px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 bg-white text-jpmc-700 shadow-sm";
+                navAdminBtn.className = "px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2";
+            } else {
+                formView.classList.add('hidden');
+                adminView.classList.remove('hidden');
+                navAdminBtn.className = "px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all flex items-center space-x-2 bg-white text-jpmc-700 shadow-sm";
+                navFormBtn.className = "px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-2";
+                renderTable();
+            }
+        }
+
+        // Form Stepper Logic
+        function changeStep(delta) {
+            if (delta === 1 && !validateCurrentStep()) {
+                return;
+            }
+            const nextStep = currentStep + delta;
+            if (nextStep >= 1 && nextStep <= 4) {
+                goToStep(nextStep);
+            }
+        }
+
+        function goToStep(step) {
+            // Validate step jumping
+            if (step > currentStep && !validateCurrentStep()) return;
+
+            // Hide all steps
+            document.getElementById(`formStep${currentStep}`).classList.add('hidden');
+            
+            currentStep = step;
+            
+            // Show new step
+            document.getElementById(`formStep${currentStep}`).classList.remove('hidden');
+
+            // Update Stepper Visuals
+            for (let i = 1; i <= 4; i++) {
+                const circle = document.getElementById(`stepCircle${i}`);
+                if (i < currentStep) {
+                    circle.className = "w-9 h-9 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-all step-completed";
+                    circle.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+                } else if (i === currentStep) {
+                    circle.className = "w-9 h-9 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-all step-active bg-white";
+                    circle.innerHTML = i;
+                } else {
+                    circle.className = "w-9 h-9 rounded-full border-2 border-slate-300 bg-white text-slate-400 flex items-center justify-center font-bold text-sm transition-all";
+                    circle.innerHTML = i;
+                }
+            }
+            lucide.createIcons();
+
+            // Update Buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (currentStep === 1) {
+                prevBtn.classList.add('invisible');
+            } else {
+                prevBtn.classList.remove('invisible');
+            }
+
+            if (currentStep === 4) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+                renderReviewSummary();
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                const required = ['empName', 'staffId', 'department', 'jobTitle', 'empEmail', 'empPhone', 'managerName'];
+                for (let id of required) {
+                    const el = document.getElementById(id);
+                    if (!el.value.trim()) {
+                        el.focus();
+                        el.classList.add('ring-2', 'ring-rose-500');
+                        setTimeout(() => el.classList.remove('ring-2', 'ring-rose-500'), 2000);
+                        return false;
+                    }
+                }
+            } else if (currentStep === 2) {
+                const required = ['courseTitle', 'courseProvider', 'courseType', 'startDate', 'endDate', 'courseLocation', 'courseCost'];
+                for (let id of required) {
+                    const el = document.getElementById(id);
+                    if (!el.value.trim()) {
+                        el.focus();
+                        el.classList.add('ring-2', 'ring-rose-500');
+                        setTimeout(() => el.classList.remove('ring-2', 'ring-rose-500'), 2000);
+                        return false;
+                    }
+                }
+            } else if (currentStep === 3) {
+                const required = ['justification', 'learningOutcomes', 'impactDescription'];
+                for (let id of required) {
+                    const el = document.getElementById(id);
+                    if (!el.value.trim()) {
+                        el.focus();
+                        el.classList.add('ring-2', 'ring-rose-500');
+                        setTimeout(() => el.classList.remove('ring-2', 'ring-rose-500'), 2000);
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function renderReviewSummary() {
+            const card = document.getElementById('reviewSummaryCard');
+            const cost = parseFloat(document.getElementById('courseCost').value || 0).toFixed(2);
+
+            card.innerHTML = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div><strong class="text-slate-500 block">Applicant Name:</strong> ${document.getElementById('empName').value} (${document.getElementById('staffId').value})</div>
+                    <div><strong class="text-slate-500 block">Department / Title:</strong> ${document.getElementById('department').value} - ${document.getElementById('jobTitle').value}</div>
+                    <div><strong class="text-slate-500 block">Direct Manager:</strong> ${document.getElementById('managerName').value}</div>
+                    <div><strong class="text-slate-500 block">Contact:</strong> ${document.getElementById('empEmail').value}</div>
+                    <div class="sm:col-span-2 border-t border-slate-200 pt-2"></div>
+                    <div><strong class="text-slate-500 block">Course Name:</strong> ${document.getElementById('courseTitle').value}</div>
+                    <div><strong class="text-slate-500 block">Provider & Type:</strong> ${document.getElementById('courseProvider').value} (${document.getElementById('courseType').value})</div>
+                    <div><strong class="text-slate-500 block">Dates & Venue:</strong> ${document.getElementById('startDate').value} to ${document.getElementById('endDate').value} @ ${document.getElementById('courseLocation').value}</div>
+                    <div><strong class="text-slate-500 block">Estimated Cost:</strong> <span class="font-bold text-jpmc-700">BND $${cost}</span></div>
+                    <div class="sm:col-span-2 border-t border-slate-200 pt-2"></div>
+                    <div class="sm:col-span-2"><strong class="text-slate-500 block">Justification:</strong> ${document.getElementById('justification').value}</div>
+                </div>
+            `;
+        }
+
+        // Submit Form Event
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            if (!validateCurrentStep()) return;
+
+            const newApp = {
+                id: "JPMC-2026-" + String(Math.floor(100 + Math.random() * 900)),
+                submittedAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
+                empName: document.getElementById('empName').value,
+                staffId: document.getElementById('staffId').value,
+                department: document.getElementById('department').value,
+                jobTitle: document.getElementById('jobTitle').value,
+                empEmail: document.getElementById('empEmail').value,
+                empPhone: document.getElementById('empPhone').value,
+                managerName: document.getElementById('managerName').value,
+                courseTitle: document.getElementById('courseTitle').value,
+                courseProvider: document.getElementById('courseProvider').value,
+                courseType: document.getElementById('courseType').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                courseLocation: document.getElementById('courseLocation').value,
+                courseCost: parseFloat(document.getElementById('courseCost').value || 0),
+                justification: document.getElementById('justification').value,
+                learningOutcomes: document.getElementById('learningOutcomes').value,
+                impactDescription: document.getElementById('impactDescription').value,
+                status: "Pending Approval",
+                reviewNotes: ""
+            };
+
+            applications.unshift(newApp);
+            saveToLocalStorage();
+            updateMetrics();
+
+            // Reset form
+            document.getElementById('trainingAppForm').reset();
+            goToStep(1);
+
+            // Toast/Alert Feedback
+            alert("Application Submitted Successfully! Ref ID: " + newApp.id);
+            switchTab('admin');
+        }
+
+        // Admin Dashboard Rendering
+        function renderTable() {
+            const tbody = document.getElementById('requestsTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtered = applications.filter(app => {
+                const matchesStatus = (activeFilter === 'ALL') || (app.status === activeFilter);
+                const matchesSearch = app.empName.toLowerCase().includes(searchVal) ||
+                                      app.staffId.toLowerCase().includes(searchVal) ||
+                                      app.courseTitle.toLowerCase().includes(searchVal) ||
+                                      app.department.toLowerCase().includes(searchVal);
+                return matchesStatus && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            tbody.innerHTML = filtered.map(app => {
+                let badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
+                if (app.status === 'Approved') badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if (app.status === 'Rejected') badgeClass = "bg-rose-100 text-rose-800 border-rose-200";
+                if (app.status === 'Info Requested') badgeClass = "bg-blue-100 text-blue-800 border-blue-200";
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="p-4">
+                            <span class="font-mono text-xs font-bold text-jpmc-700">${app.id}</span>
+                            <div class="text-[11px] text-slate-400 mt-0.5">${app.submittedAt}</div>
+                        </td>
+                        <td class="p-4">
+                            <div class="font-semibold text-slate-800">${app.empName}</div>
+                            <div class="text-xs text-slate-500">${app.jobTitle} • <span class="text-slate-600">${app.department}</span></div>
+                        </td>
+                        <td class="p-4">
+                            <div class="font-medium text-slate-800 line-clamp-1">${app.courseTitle}</div>
+                            <div class="text-xs text-slate-500">${app.courseProvider} (${app.courseType})</div>
+                        </td>
+                        <td class="p-4 font-mono font-semibold text-slate-700">
+                            BND $${parseFloat(app.courseCost).toFixed(2)}
+                        </td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${badgeClass}">
+                                ${app.status}
+                            </span>
+                        </td>
+                        <td class="p-4 text-right space-x-1 no-print">
+                            <button onclick="openDetailModal('${app.id}')" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-jpmc-50 hover:text-jpmc-700 text-xs font-semibold text-slate-600 transition-all">
+                                Review Details
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function setStatusFilter(filter) {
+            activeFilter = filter;
+            const buttons = {
+                'ALL': 'filterAll',
+                'Pending Approval': 'filterPending',
+                'Approved': 'filterApproved',
+                'Info Requested': 'filterInfo',
+                'Rejected': 'filterRejected'
+            };
+
+            Object.keys(buttons).forEach(key => {
+                const btn = document.getElementById(buttons[key]);
+                if (key === filter) {
+                    btn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white";
+                } else {
+                    btn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200";
+                }
+            });
+
+            renderTable();
+        }
+
+        function filterRequests() {
+            renderTable();
+        }
+
+        function updateMetrics() {
+            const total = applications.length;
+            const pending = applications.filter(a => a.status === 'Pending Approval').length;
+            const approved = applications.filter(a => a.status === 'Approved').length;
+            const approvedBudget = applications
+                .filter(a => a.status === 'Approved')
+                .reduce((sum, a) => sum + (parseFloat(a.courseCost) || 0), 0);
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statPending').innerText = pending;
+            document.getElementById('statApproved').innerText = approved;
+            document.getElementById('statBudget').innerText = "BND $" + approvedBudget.toFixed(2);
+
+            const pendingBadge = document.getElementById('pendingBadge');
+            if (pending > 0) {
+                pendingBadge.innerText = pending;
+                pendingBadge.classList.remove('hidden');
+            } else {
+                pendingBadge.classList.add('hidden');
+            }
+        }
+
+        // Detail / Review Modal Handlers
+        function openDetailModal(id) {
+            currentSelectedId = id;
+            const app = applications.find(a => a.id === id);
+            if (!app) return;
+
+            document.getElementById('modalTitle').innerText = app.courseTitle;
+            document.getElementById('modalSubTitle').innerText = `Ref: ${app.id} | Applicant: ${app.empName} (${app.staffId})`;
+            document.getElementById('reviewNotesInput').value = app.reviewNotes || '';
+
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+                    <div>
+                        <span class="text-slate-400 font-medium block">Employee Name</span>
+                        <span class="font-semibold text-slate-800">${app.empName}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium block">Department / Designation</span>
+                        <span class="font-semibold text-slate-800">${app.department} / ${app.jobTitle}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium block">Email / Phone</span>
+                        <span class="font-semibold text-slate-800">${app.empEmail} / ${app.empPhone}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium block">Direct Manager</span>
+                        <span class="font-semibold text-slate-800">${app.managerName}</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Training Program Details</h4>
+                    <div class="grid grid-cols-2 gap-3 text-xs bg-white p-3 rounded-xl border border-slate-200">
+                        <div><strong class="text-slate-500">Provider:</strong> ${app.courseProvider}</div>
+                        <div><strong class="text-slate-500">Format:</strong> ${app.courseType}</div>
+                        <div><strong class="text-slate-500">Dates:</strong> ${app.startDate} to ${app.endDate}</div>
+                        <div><strong class="text-slate-500">Location:</strong> ${app.courseLocation}</div>
+                        <div class="col-span-2 text-sm pt-1 border-t border-slate-100">
+                            <strong class="text-slate-600">Total Requested Fee:</strong> 
+                            <span class="font-bold text-jpmc-700 ml-1">BND $${parseFloat(app.courseCost).toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Business Case & Justification</h4>
+                    <div class="p-3 bg-white rounded-xl border border-slate-200 text-xs space-y-2">
+                        <div><strong class="text-slate-600 block">Reason for Attending:</strong> ${app.justification}</div>
+                        <div><strong class="text-slate-600 block">Key Learning Outcomes:</strong> ${app.learningOutcomes}</div>
+                        <div><strong class="text-slate-600 block">Operational & Patient Impact:</strong> ${app.impactDescription}</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            currentSelectedId = null;
+        }
+
+        function updateStatus(newStatus) {
+            if (!currentSelectedId) return;
+            const appIndex = applications.findIndex(a => a.id === currentSelectedId);
+            if (appIndex !== -1) {
+                applications[appIndex].status = newStatus;
+                applications[appIndex].reviewNotes = document.getElementById('reviewNotesInput').value;
+                saveToLocalStorage();
+                updateMetrics();
+                renderTable();
+                closeDetailModal();
+            }
+        }
+
+        // Export to CSV Function
+        function exportToCSV() {
+            if (applications.length === 0) {
+                alert("No training requests available to export.");
+                return;
+            }
+
+            const headers = ["Ref ID", "Submission Date", "Staff Name", "Staff ID", "Department", "Job Title", "Course Title", "Provider", "Type", "Start Date", "End Date", "Cost (BND)", "Status", "Manager Notes"];
+            const rows = applications.map(a => [
+                `"${a.id}"`,
+                `"${a.submittedAt}"`,
+                `"${a.empName}"`,
+                `"${a.staffId}"`,
+                `"${a.department}"`,
+                `"${a.jobTitle}"`,
+                `"${a.courseTitle}"`,
+                `"${a.courseProvider}"`,
+                `"${a.courseType}"`,
+                `"${a.startDate}"`,
+                `"${a.endDate}"`,
+                `"${a.courseCost}"`,
+                `"${a.status}"`,
+                `"${(a.reviewNotes || '').replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `JPMC_Training_Requests_${new Date().toISOString().substring(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Reset Demo Data
+        function resetDemoData() {
+            if (confirm("Reset applications back to default sample records?")) {
+                applications = [...SAMPLE_DATA];
+                saveToLocalStorage();
+                updateMetrics();
+                renderTable();
+            }
+        }
+
+        // Guide Modal Toggle
+        function toggleGuideModal(show) {
+            const modal = document.getElementById('guideModal');
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
